@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- head 中 -->
+    <link rel="stylesheet" href="css/weui.min.css">
+    <link rel="stylesheet" href="css/jquery-weui.min.css">
+
+
+    <title>H5 网页示例</title>
+</head>
+<body style="padding: 20px">
+<div class="alert alert-primary" role="alert">
+    表单开始，本案例使用jqweui构建，请参考 http://jqweui.com
+</div>
+<div class="weui-cells weui-cells_form">
+    <div class="weui-cell">
+        <div class="weui-cell__hd"><label class="weui-label">姓名</label></div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" id="name" type="text" placeholder="请输入姓名">
+        </div>
+    </div>
+    <div class="weui-cell">
+        <div class="weui-cell__hd"><label class="weui-label">年龄</label></div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" id="age" type="number" pattern="[0-9]*" placeholder="请输入年龄">
+        </div>
+    </div>
+
+    <div class="weui-cells weui-cells_radio">
+        <div class="weui-cells__title">年级</div>
+        <label class="weui-cell weui-check__label" for="one">
+            <div class="weui-cell__bd">
+                <p>一年级</p>
+            </div>
+            <div class="weui-cell__ft">
+                <input type="radio" class="weui-check" name="radio1" id="one" checked="checked">
+                <span class="weui-icon-checked"></span>
+            </div>
+        </label>
+        <label class="weui-cell weui-check__label" for="two">
+            <div class="weui-cell__bd">
+                <p>二年级</p>
+            </div>
+            <div class="weui-cell__ft">
+                <input type="radio" name="radio1" class="weui-check" id="two">
+                <span class="weui-icon-checked"></span>
+            </div>
+        </label>
+        <label class="weui-cell weui-check__label" for="three">
+            <div class="weui-cell__bd">
+                <p>三年级</p>
+            </div>
+            <div class="weui-cell__ft">
+                <input type="radio" name="radio1" class="weui-check" id="three">
+                <span class="weui-icon-checked"></span>
+            </div>
+        </label>
+    </div>
+</div>
+<div class="weui-cells weui-cells_checkbox">
+    <div class="weui-cells__title">爱好</div>
+    <label class="weui-cell weui-check__label" for="music">
+        <div class="weui-cell__hd">
+            <input type="checkbox" class="weui-check" name="aihao" id="music" checked="checked" value="听音乐">
+            <i class="weui-icon-checked"></i>
+        </div>
+        <div class="weui-cell__bd">
+            <p>听音乐</p>
+        </div>
+    </label>
+    <label class="weui-cell weui-check__label" for="sing">
+        <div class="weui-cell__hd">
+            <input type="checkbox" name="aihao" class="weui-check" id="sing" value="唱歌">
+            <i class="weui-icon-checked"></i>
+        </div>
+        <div class="weui-cell__bd">
+            <p>唱歌</p>
+        </div>
+    </label>
+    <label class="weui-cell weui-check__label" for="dance">
+        <div class="weui-cell__hd">
+            <input type="checkbox" name="aihao" class="weui-check" id="dance" value="跳舞">
+            <i class="weui-icon-checked"></i>
+        </div>
+        <div class="weui-cell__bd">
+            <p>跳舞</p>
+        </div>
+    </label>
+</div>
+
+<div class="weui-cell weui-cell_select">
+    <div class="weui-cells__title">性别</div>
+    <div class="weui-cell__bd">
+        <select class="weui-select" name="sex">
+            <option value="男同学">男同学</option>
+            <option value="女同学">女同学</option>
+        </select>
+    </div>
+</div>
+
+<div class="weui-cells__title">开关</div>
+<div class="weui-cells weui-cells_form">
+    <div class="weui-cell weui-cell_switch">
+        <div class="weui-cell__bd">标题文字</div>
+        <div class="weui-cell__ft">
+            <input class="weui-switch" type="checkbox">
+        </div>
+    </div>
+</div>
+
+<div class="weui-cells__title">备注</div>
+<div class="weui-cells weui-cells_form">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <textarea name="mark" id="mark" class="weui-textarea" placeholder="请输入文本" rows="3"></textarea>
+            <div class="weui-textarea-counter"><span>0</span>/200</div>
+        </div>
+    </div>
+</div>
+<div class="weui-btn-area">
+    <a href="javascript:;" onclick="javascript:save();" class="weui-btn weui-btn_plain-default">保存参数</a>
+
+    <a class="weui-btn weui-btn_primary" href="javascript:" onclick="javascript:window.ec.start()">启动脚本</a>
+</div>
+
+
+<!-- body 最后 -->
+<script src="htmljs/jquery.min.js"></script>
+<script src="htmljs/jquery-weui.min.js"></script>
+
+<!-- 如果使用了某些拓展插件还需要额外的JS -->
+<script src="htmljs/swiper.min.js"></script>
+<script src="htmljs/city-picker.min.js"></script>
+
+</body>
+
+
+<script>
+    //隐藏开始按钮
+    window.ec.hideStartBtn();
+
+    $(function () {
+        //使用jquery进行设置值
+        //取得参数并且进行设置
+        var name = window.ec.getConfig("name");
+        $("#name").val(name);
+
+        var mark = window.ec.getConfig("mark");
+        $("#mark").val(mark);
+
+        var age = window.ec.getConfig("age");
+        $("#age").val(age);
+        var one = window.ec.getConfig("one");
+        if (one === "true") {
+            $("#one").attr("checked", "checked");
+        }
+        var two = window.ec.getConfig("two");
+        if (two === "true") {
+            $("#two").attr("checked", "checked");
+        }
+        var three = window.ec.getConfig("three");
+        if (three === "true") {
+            $("#three").attr("checked", "checked");
+        }
+
+        var music = window.ec.getConfig("music");
+        if (music === "true") {
+            $("#music").attr("checked", "checked");
+        }
+
+
+        var sing = window.ec.getConfig("sing");
+        if (sing === "true") {
+            $("#sing").attr("checked", "checked");
+        }
+
+        var dance = window.ec.getConfig("dance");
+        if (dance === "true") {
+            $("#dance").attr("checked", "checked");
+        }
+
+        var sex = window.ec.getConfig("sex");
+        $("select[name=sex]").find("option[value='" + sex + "']").attr("selected", true);
+    });
+
+
+    //保存参数的函数
+    function save() {
+        var name = $("#name").val();
+        window.ec.saveConfig("name", name);
+        var age = $("#age").val();
+        window.ec.saveConfig("age", age);
+        //一年级
+        window.ec.saveConfig("one", $("#one").prop("checked"));
+        window.ec.saveConfig("two", $("#two").prop("checked"));
+        window.ec.saveConfig("three", $("#three").prop("checked"));
+
+        window.ec.saveConfig("music", $("#music").prop("checked"));
+        window.ec.saveConfig("sing", $("#sing").prop("checked"));
+        window.ec.saveConfig("dance", $("#dance").prop("checked"));
+
+        window.ec.saveConfig("mark", $("#mark").val());
+
+
+        var sex = $("select[name=sex]").find("option:selected").val();
+        window.ec.saveConfig("sex", sex);
+
+        window.ec.toast("保存成功");
+
+
+    }
+
+</script>
+</html>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- head 中 -->
+    <link rel="stylesheet" href="css/weui.min.css">
+    <link rel="stylesheet" href="css/jquery-weui.min.css">
+
+
+    <title>H5 网页示例</title>
+</head>
+<body style="padding: 20px">
+<H4>以下是服务控制演示</H4>
+
+<div class="weui-cells weui-cells_form">
+    <div class="weui-cell weui-cell_switch">
+        <div class="weui-cell__bd">
+            <div id="service">服务</div>
+        </div>
+    </div>
+</div>
+<div class="weui-cells__title">服务</div>
+<div class="weui-cells weui-cells_form">
+    <div class="weui-cell weui-cell_switch">
+        <div class="weui-cell__bd">服务状态</div>
+        <div class="weui-cell__ft">
+            <input class="weui-switch" type="checkbox" id="serviceOk"/>
+        </div>
+    </div>
+</div>
+
+<div class="weui-btn-area">
+
+    <a class="weui-btn weui-btn_primary" href="javascript:" onclick="openEnv()">启动环境</a>
+</div>
+
+<!-- body 最后 -->
+<script src="htmljs/jquery.min.js"></script>
+<script src="htmljs/jquery-weui.min.js"></script>
+
+<!-- 如果使用了某些拓展插件还需要额外的JS -->
+<script src="htmljs/swiper.min.js"></script>
+<script src="htmljs/city-picker.min.js"></script>
+</body>
+
+
+<script>
+    $(function () {
+        var serviceMode = window.ec.isAccMode() ? "无障碍服务" : "代理服务";
+        $("#service").text("运行模式: " + serviceMode);
+
+        var serviceOk = false;
+        if (window.ec.isAccMode()) {
+            serviceOk = window.ec.isAccServiceOk();
+        } else {
+            serviceOk = window.ec.isAgentServiceOk();
+        }
+        if (serviceOk) {
+            $("#serviceOk").prop("checked", true);
+        } else {
+            $("#serviceOk").prop("checked", false);
+        }
+    });
+
+    function openEnv() {
+        var r = window.ec.startEnv();
+        $("#serviceOk").prop("checked", r);
+    }
+
+
+</script>
+
+</html>
