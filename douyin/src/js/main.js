@@ -32,8 +32,9 @@ function downloadQrcode(url) {
     )
     logd("download status -> " + downStatus);
     sleep(1000)
-    let insertImage = utils.insertImageToAlbum(downloadPath);
-    logd("insert image to album -> " + insertImage);
+    utils.insertImageToAlbum(downloadPath);
+    // shell.execCommand("am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file://" + downloadPath)
+    // logd("insert image to album -> " + insertImage);
 }
 
 function clearQrcode() {
@@ -52,8 +53,9 @@ function getPageData(page) {
 
 function stopAndStart() {
     clearQrcode()
-    shell.stopApp("com.tencent.mm")
-    utils.openApp("com.tencent.mm")
+    shell.execCommand("am start -n com.tencent.mm/com.tencent.mm.plugin.scanner.ui.BaseScanUI")
+    // shell.stopApp("com.tencent.mm")
+    // utils.openApp("com.tencent.mm")
 }
 
 function main() {
@@ -112,7 +114,31 @@ function main() {
     // // logd("支付输入密码 " + JSON.stringify(passwordButton));
     // clickPoint(passwordButton.bounds.left - 10, passwordButton.bounds.top) //1按键
     //
-    // if (true) return
+    // shell.stopApp("com.tencent.mm")
+    // utils.openApp("com.tencent.mm")
+    // logd(getRunningActivity())
+    logd(shell.execCommand("am start -n com.tencent.mm/com.tencent.mm.plugin.scanner.ui.BaseScanUI"))
+    // logd(getRunningActivity())
+
+    // utils.openActivity({
+    //     "action": "android.intent.action.VIEW",
+    //     "uri": "weixin://wxpay/bizpayurl?pr=6ZNJ9Fhzz"
+    // })
+    // let imageChooseButtonSelector = index(0).depth(11).drawingOrder(1).clz("android.widget.ImageView")
+    // click(imageChooseButtonSelector)
+
+    // let downloadPath = "/sdcard/DCIM/scan.png"
+    // logd(file.copy(downloadPath,"/sdcard/DCIM/b.png"));
+    // let cc = shell.execCommand("am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_DIR -d file://sdcard/")
+    // logd(cc);
+
+    // click(text("所有图片"))
+    // click(text("DCIM"))
+    // clickPoint(100, 200)
+    // utils.openIntentAction("weixin://wxpay/bizpayurl?pr=6ZNJ9Fhzz")
+    // click(text("立即支付"))
+    if (true) return
+
 
     let result = [];
     // var ws = http.newWebsocket("ws://192.168.0.97:30000/mechine/hello", null);
@@ -127,13 +153,14 @@ function main() {
         let data = JSON.parse(dataText)
         if (data.type === 'order') {
             let orderId = data.data.orderId;
-            let image = data.data.image;
+            let qrcode = data.data.qrcode;
             let domain = data.data.domain;
             let money = data.data.money;
             let volume = data.data.volume;
             let platform = data.data.platform;
             let timeout = data.data.timeout.length;
-            downloadQrcode(domain + "/file/image?path=" + image)
+            let elementFindTime = 5;
+            downloadQrcode(domain + "/file/image?path=" + qrcode)
 
             let notTimeout = true;
             setTimeout(function () {
@@ -143,106 +170,106 @@ function main() {
             }, parseInt(timeout) * 1000)
 
 
-            if (getRunningActivity() !== "com.tencent.mm.ui.LauncherUI") {
-                utils.openApp("com.tencent.mm")
+            if (getRunningActivity() !== "com.tencent.mm.plugin.scanner.ui.BaseScanUI") {
+                shell.execCommand("am start -n com.tencent.mm/com.tencent.mm.plugin.scanner.ui.BaseScanUI")
                 sleep(3 * 1000)
             }
-            let fanxianSelector = text("发现")
-            let fanxianExit = waitExistNode(fanxianSelector, 3 * 1000)
-            if (fanxianExit && notTimeout) {
-                logd("找到发现按钮、点击 -> " + click(fanxianSelector));
+            // let fanxianSelector = text("发现")
+            // let fanxianExit = waitExistNode(fanxianSelector, elementFindTime * 1000)
+            // if (fanxianExit && notTimeout) {
+            //     logd("找到发现按钮、点击 -> " + click(fanxianSelector));
+            //     sleep(1000)
+            //     let scanSelector = text("扫一扫")
+            //     let scanButtonExit = waitExistNode(scanSelector, elementFindTime * 1000)
+            //     if (scanButtonExit && notTimeout) {
+            // ws.sendText(getPageData("jumped_wechat_page"))
+            // logd("找到扫一扫按钮、点击 -> " + click(scanSelector));
+            // sleep(1000)
+            let imageChooseButtonSelector = id("com.tencent.mm:id/hhv")//index(0).depth(10).drawingOrder(1).clz("android.widget.ImageView")
+            let imageChooseButtonExit = waitExistNode(imageChooseButtonSelector, elementFindTime * 1000)
+            if (imageChooseButtonExit && notTimeout) {
+                ws.sendText(getPageData("jumped_scanned_page"))
+                logd("找到图片选择按钮、点击 -> " + click(imageChooseButtonSelector));
                 sleep(1000)
-                let scanSelector = text("扫一扫")
-                let scanButtonExit = waitExistNode(scanSelector, 3 * 1000)
-                if (scanButtonExit && notTimeout) {
-                    ws.sendText(getPageData("jumped_wechat_page"))
-                    logd("找到扫一扫按钮、点击 -> " + click(scanSelector));
+
+                let downChooseSelector = text("所有图片")
+                let downChooseExit = waitExistNode(downChooseSelector, elementFindTime * 1000)
+                if (downChooseExit && notTimeout) {
+                    click(downChooseSelector)
                     sleep(1000)
-                    let imageChooseButtonSelector = index(0).depth(10).drawingOrder(1).clz("android.widget.ImageView")
-                    let imageChooseButtonExit = waitExistNode(imageChooseButtonSelector, 3 * 1000)
-                    if (imageChooseButtonExit && notTimeout) {
-                        ws.sendText(getPageData("jumped_scanned_page"))
-                        logd("找到图片选择按钮、点击 -> " + click(imageChooseButtonSelector));
+                    let dcimSelector = text("DCIM")
+                    let dcimExit = waitExistNode(dcimSelector, elementFindTime * 1000)
+                    if (dcimExit && notTimeout) {
+                        ws.sendText(getPageData("jumped_qrcode_choose_page"))
+                        click(dcimSelector)
                         sleep(1000)
-
-                        let downChooseSelector = text("所有图片")
-                        let downChooseExit = waitExistNode(downChooseSelector, 3 * 1000)
-                        if (downChooseExit && notTimeout) {
-                            click(downChooseSelector)
-                            sleep(1000)
-                            let dcimSelector = text("DCIM")
-                            let dcimExit = waitExistNode(dcimSelector, 3 * 1000)
-                            if (dcimExit && notTimeout) {
-                                ws.sendText(getPageData("jumped_qrcode_choose_page"))
-                                click(dcimSelector)
+                        logd("找到二维码图片、点击 -> " + clickPoint(100, 200));
+                        sleep(1500)
+                            let nowPaySelector = text("立即支付")
+                            let nowPaySelectorExit = waitExistNode(nowPaySelector, elementFindTime * 1000)
+                            if (nowPaySelectorExit && notTimeout) {
+                                ws.sendText(getPageData("jumped_qrcode_identify_page"))
+                                logd("识别二维码、点击支付 -> " + click(nowPaySelector));
                                 sleep(1000)
-                                logd("找到二维码图片、点击 -> " + clickPoint(100, 200));
-                                sleep(1500)
-                                let nowPaySelector = text("立即支付")
-                                let nowPaySelectorExit = waitExistNode(nowPaySelector, 3 * 1000)
-                                if (nowPaySelectorExit && notTimeout) {
-                                    ws.sendText(getPageData("jumped_qrcode_identify_page"))
-                                    logd("识别二维码、点击支付 -> " + click(nowPaySelector));
+                                let payPageSelector = text("请输入支付密码")
+                                let payPageExit = waitExistNode(payPageSelector, elementFindTime * 1000)
+                                if (payPageExit && notTimeout) {
+                                    let passwordButton = index(1).depth(13).drawingOrder(2)
+                                        .clz("android.widget.ImageView")
+                                        .getOneNodeInfo(elementFindTime * 1000)
+                                    logd("支付输入密码 " + JSON.stringify(passwordButton));
+                                    clickPoint(passwordButton.bounds.left - 10, passwordButton.bounds.top) //1按键
+                                    sleep(500)
+                                    clickPoint(passwordButton.bounds.left - 10, passwordButton.bounds.top) //1按键
+                                    sleep(500)
+                                    clickPoint(passwordButton.bounds.left - 10, passwordButton.bounds.top) //1按键
+
+                                    sleep(500)
+                                    clickPoint(passwordButton.bounds.left + 10, passwordButton.bounds.top) //2按键
+                                    sleep(500)
+                                    clickPoint(passwordButton.bounds.left + 10, passwordButton.bounds.top) //2按键
+                                    sleep(500)
+                                    clickPoint(passwordButton.bounds.left + 10, passwordButton.bounds.top) //2按键
                                     sleep(1000)
-                                    let payPageSelector = text("请输入支付密码")
-                                    let payPageExit = waitExistNode(payPageSelector, 3 * 1000)
-                                    if (payPageExit && notTimeout) {
-                                        let passwordButton = index(1).depth(13).drawingOrder(2)
-                                            .clz("android.widget.ImageView")
-                                            .getOneNodeInfo(3 * 1000)
-                                        logd("支付输入密码 " + JSON.stringify(passwordButton));
-                                        clickPoint(passwordButton.bounds.left - 10, passwordButton.bounds.top) //1按键
-                                        sleep(500)
-                                        clickPoint(passwordButton.bounds.left - 10, passwordButton.bounds.top) //1按键
-                                        sleep(500)
-                                        clickPoint(passwordButton.bounds.left - 10, passwordButton.bounds.top) //1按键
 
-                                        sleep(500)
-                                        clickPoint(passwordButton.bounds.left + 10, passwordButton.bounds.top) //2按键
-                                        sleep(500)
-                                        clickPoint(passwordButton.bounds.left + 10, passwordButton.bounds.top) //2按键
-                                        sleep(500)
-                                        clickPoint(passwordButton.bounds.left + 10, passwordButton.bounds.top) //2按键
-                                        sleep(1000)
-
-                                        let payFinishButton = text("完成")
-                                        let payFinishButtonExit = waitExistNode(payFinishButton, 3 * 1000)
-                                        if (payFinishButtonExit) {
-                                            logd("支付完成");
-                                            // click(payFinishButton)
-                                            ws.sendText(getPageData("jumped_pay_success_page"))
-                                            stopAndStart()
-                                        } else {
-                                            logd("支付失败");
-                                            ws.sendText(getPageData("jumped_pay_fail_page"))
-                                            stopAndStart()
-                                        }
+                                    let payFinishButton = text("完成")
+                                    let payFinishButtonExit = waitExistNode(payFinishButton, elementFindTime * 1000)
+                                    if (payFinishButtonExit) {
+                                        logd("支付完成");
+                                        // click(payFinishButton)
+                                        ws.sendText(getPageData("jumped_pay_success_page"))
+                                        stopAndStart()
                                     } else {
-                                        logd("找不到二维码图片");
-                                        ws.sendText(getPageData("jumped_qrcode_un_identify_page"))
+                                        logd("支付失败");
+                                        ws.sendText(getPageData("jumped_pay_fail_page"))
                                         stopAndStart()
                                     }
                                 } else {
-                                    logd("识别二维码失败");
-                                    ws.sendText(getPageData("jumped_pay_fail_page"))
+                                    logd("找不到二维码图片");
+                                    ws.sendText(getPageData("jumped_qrcode_un_identify_page"))
                                     stopAndStart()
                                 }
-
                             } else {
-                                logd("DCIM 图片类型找不到");
+                                logd("识别二维码失败");
+                                ws.sendText(getPageData("jumped_pay_fail_page"))
+                                stopAndStart()
                             }
-                        } else {
-                            logd("找不到下拉图片类型");
-                        }
+
                     } else {
-                        logd("找不到图片选择");
+                        logd("DCIM 图片类型找不到");
                     }
                 } else {
-                    logd("找不到扫一扫");
+                    logd("找不到下拉图片类型");
                 }
             } else {
-                logd("找不到发现按键");
+                logd("找不到图片选择");
             }
+            //     } else {
+            //         logd("找不到扫一扫");
+            //     }
+            // } else {
+            //     logd("找不到发现按键");
+            // }
 
         }
     })
